@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIPA Infrastructure — Deployment Progress</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f4f5f7;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 32px 20px;
+    }
+
+    .page { max-width: 900px; margin: 0 auto; }
+
+    /* ── Top card ── */
+    .top-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      margin-bottom: 20px;
+    }
+    .top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .top-meta .updated {
+      font-size: .78rem;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .top-meta h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #111;
+    }
+    .badge-inprogress {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffc107;
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: .76rem;
+      font-weight: 600;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .stat-box {
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .stat-box .lbl { font-size: .76rem; color: #888; margin-bottom: 4px; }
+    .stat-box .val { font-size: 1.55rem; font-weight: 700; color: #111; }
+
+    /* ── Overall bar ── */
+    .bar-wrap { }
+    .bar-header { display: flex; justify-content: space-between; font-size: .8rem; color: #555; margin-bottom: 7px; }
+    .bar-bg { background: #e8e8e8; border-radius: 999px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: #16a34a; }
+
+    /* ── Server card ── */
+    .server-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+    }
+
+    .server-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-green  { background: #16a34a; }
+    .dot-gray   { background: #bbb; }
+    .dot-yellow { background: #f59e0b; }
+
+    .server-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+    }
+    .server-status {
+      font-size: .73rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .s-complete { background: #dcfce7; color: #15803d; }
+    .s-pending  { background: #f1f5f9; color: #94a3b8; }
+    .s-wip      { background: #fef9c3; color: #a16207; }
+
+    .server-ip {
+      font-size: .76rem;
+      color: #888;
+      margin-left: 4px;
+    }
+    .server-pct {
+      margin-left: auto;
+      font-size: .95rem;
+      font-weight: 700;
+      color: #111;
+    }
+
+    .server-bar-bg { background: #e8e8e8; border-radius: 999px; height: 7px; overflow: hidden; margin-bottom: 14px; }
+    .server-bar-fill { height: 100%; border-radius: 999px; }
+    .fill-green  { background: #16a34a; }
+    .fill-gray   { background: #cbd5e1; }
+    .fill-yellow { background: #f59e0b; }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tag {
+      font-size: .72rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    .tag-not { background: #f8fafc; color: #bbb; border-color: #e2e8f0; font-style: italic; }
+
+    /* Containers */
+    .section-label {
+      font-size: .69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+    .containers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .container-box {
+      border: 1px solid #e8edf2;
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+    .container-box .c-name {
+      font-size: .82rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .c-dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; flex-shrink: 0; }
+    .container-box .c-image { font-size: .69rem; color: #888; margin: 2px 0; }
+    .container-box .c-port { font-size: .72rem; color: #3b82f6; font-family: monospace; }
+
+    /* Links */
+    .links-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .75rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #374151;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .link-btn:hover { background: #e2e8f0; }
+    .link-icon { font-size: .85rem; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: .76rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── TOP SUMMARY ── -->
+  <div class="top-card">
+    <div class="top-meta">
+      <div>
+        <div class="updated">Last updated: May 2026</div>
+        <h1>DIPA Infrastructure — Deployment Progress</h1>
+      </div>
+      <span class="badge-inprogress">In progress</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="lbl">Overall progress</div>
+        <div class="val">60%</div>
+      </div>
+      <div class="stat-box">
+        <div class="lbl">Servers done</div>
+        <div class="val">3 / 5</div>
+      </div>
+      <div class="stat-box">
+        <div class="lbl">In progress</div>
+        <div class="val">0 / 5</div>
+      </div>
+      <div class="stat-box">
+        <div class="lbl">Pending</div>
+        <div class="val">2 / 5</div>
+      </div>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-header">
+        <span>Total deployment progress</span>
+        <span>60%</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:60%"></div></div>
+    </div>
+  </div>
+
+  <!-- ── SERVER 1: dipa-dev-apex ── -->
+  <div class="server-card">
+    <div class="server-header">
+      <div class="dot dot-green"></div>
+      <span class="server-name">dipa-dev-apex</span>
+      <span class="server-status s-complete">Complete</span>
+      <span class="server-pct">95%</span>
+    </div>
+    <div class="server-bar-bg"><div class="server-bar-fill fill-green" style="width:95%"></div></div>
+
+    <div class="tags">
+      <span class="tag">Oracle DB 26ai EE</span>
+      <span class="tag">APEX 26.1</span>
+      <span class="tag">ORDS 26.1</span>
+      <span class="tag">Docker + Portainer</span>
+      <span class="tag">NGINX Proxy Manager</span>
+      <span class="tag">Tailscale VPN</span>
+      <span class="tag">SSL configured</span>
+      <span class="tag">Storage test 100GB+</span>
+      <span class="tag">PDF integration</span>
+    </div>
+
+    <div class="section-label">Links</div>
+    <div class="links-row">
+      <a class="link-btn" href="#"><span class="link-icon">🐳</span> Portainer</a>
+      <a class="link-btn" href="#"><span class="link-icon">🔀</span> NGINX Manager</a>
+    </div>
+  </div>
+
+  <!-- ── SERVER 2: dipa-dev-pdf ── -->
+  <div class="server-card">
+    <div class="server-header">
+      <div class="dot dot-green"></div>
+      <span class="server-name">dipa-dev-pdf</span>
+      <span class="server-status s-complete">Complete</span>
+      <span class="server-ip">212.132.112.197 · 100.104.206.43</span>
+      <span class="server-pct">100%</span>
+    </div>
+    <div class="server-bar-bg"><div class="server-bar-fill fill-green" style="width:100%"></div></div>
+
+    <div class="tags">
+      <span class="tag">Tailscale VPN</span>
+      <span class="tag">Docker + Portainer</span>
+      <span class="tag">NGINX Proxy Manager</span>
+      <span class="tag">SSL configured</span>
+      <span class="tag">Apache + PHP 8.3</span>
+      <span class="tag">OCI8 Extension</span>
+      <span class="tag">Oracle Instant Client 21.13</span>
+      <span class="tag">TCPDF</span>
+      <span class="tag">Oracle DB Connection</span>
+      <span class="tag">FTP Server</span>
+      <span class="tag">Python 3.13 + Flask</span>
+      <span class="tag">oracledb (Python)</span>
+      <span class="tag">n8n 1.88.0</span>
+      <span class="tag">Network: dipa-dev-pdf</span>
+      <span class="tag">Tailscale ACL :1521</span>
+      <span class="tag">Apache security config</span>
+      <span class="tag">Dockerfile Apache (Portainer)</span>
+    </div>
+
+    <div class="section-label">Containers</div>
+    <div class="containers-grid">
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> apache</div>
+        <div class="c-image">php:8.3-apache</div>
+        <div class="c-port">:8080 → :80</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> python</div>
+        <div class="c-image">python-flask-app</div>
+        <div class="c-port">:5000 → :5000</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> dev_n8n</div>
+        <div class="c-image">n8nio/n8n:latest</div>
+        <div class="c-port">:5679 → :5678</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> ftp</div>
+        <div class="c-image">delfer/alpine-ftp-server</div>
+        <div class="c-port">:21, :21000-21010</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> nginx_app</div>
+        <div class="c-image">jc21/nginx-proxy-manager</div>
+        <div class="c-port">:80, :443, :81</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> nginx_db</div>
+        <div class="c-image">jc21/mariadb-aria</div>
+        <div class="c-port" style="color:#94a3b8">internal</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> portainer</div>
+        <div class="c-image">portainer/portainer-ce</div>
+        <div class="c-port">:8000, :9000</div>
+      </div>
+    </div>
+
+    <div class="section-label">Links</div>
+    <div class="links-row">
+      <a class="link-btn" href="#"><span class="link-icon">📄</span> Apache</a>
+      <a class="link-btn" href="#"><span class="link-icon">🐍</span> Python</a>
+      <a class="link-btn" href="#"><span class="link-icon">⚙️</span> n8n</a>
+      <a class="link-btn" href="#"><span class="link-icon">🔀</span> NGINX Manager</a>
+      <a class="link-btn" href="#"><span class="link-icon">🧪</span> PHP DB Test</a>
+      <a class="link-btn" href="#"><span class="link-icon">🧪</span> Python DB Test</a>
+    </div>
+  </div>
+
+  <!-- ── SERVER 3: dipa-prod-apex ── -->
+  <div class="server-card">
+    <div class="server-header">
+      <div class="dot dot-green"></div>
+      <span class="server-name">dipa-prod-apex</span>
+      <span class="server-status s-complete">Complete</span>
+      <span class="server-ip">100.93.172.16</span>
+      <span class="server-pct">100%</span>
+    </div>
+    <div class="server-bar-bg"><div class="server-bar-fill fill-green" style="width:100%"></div></div>
+
+    <div class="tags">
+      <span class="tag">Oracle DB 23.26.1 EE</span>
+      <span class="tag">APEX 26.1.0</span>
+      <span class="tag">ORDS 26.1.1</span>
+      <span class="tag">Docker + Portainer</span>
+      <span class="tag">NGINX Proxy Manager</span>
+      <span class="tag">Tailscale VPN</span>
+      <span class="tag">SSL — Let's Encrypt</span>
+      <span class="tag">iptables firewall</span>
+      <span class="tag">prod-app.dipaapp.de</span>
+      <span class="tag">Reboot verified ✓</span>
+    </div>
+
+    <div class="section-label">Containers</div>
+    <div class="containers-grid">
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> database</div>
+        <div class="c-image">oracle/database:23.26.1-ee</div>
+        <div class="c-port">:1521</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> ords</div>
+        <div class="c-image">ords-26.1:latest</div>
+        <div class="c-port">:8181 → :8080</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> nginx_app</div>
+        <div class="c-image">jc21/nginx-proxy-manager</div>
+        <div class="c-port">:80, :443, :81</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> nginx_db</div>
+        <div class="c-image">jc21/mariadb-aria</div>
+        <div class="c-port" style="color:#94a3b8">internal</div>
+      </div>
+      <div class="container-box">
+        <div class="c-name"><div class="c-dot"></div> portainer</div>
+        <div class="c-image">portainer/portainer-ce</div>
+        <div class="c-port">:9000</div>
+      </div>
+    </div>
+
+    <div class="section-label">Links</div>
+    <div class="links-row">
+      <a class="link-btn" href="https://prod-app.dipaapp.de/ords/apex"><span class="link-icon">🗄️</span> Oracle APEX</a>
+      <a class="link-btn" href="#"><span class="link-icon">🔀</span> NGINX Manager (VPN)</a>
+      <a class="link-btn" href="#"><span class="link-icon">🐳</span> Portainer (VPN)</a>
+    </div>
+  </div>
+
+  <!-- ── SERVER 4: dipa-prod-pdf ── -->
+  <div class="server-card">
+    <div class="server-header">
+      <div class="dot dot-gray"></div>
+      <span class="server-name">dipa-prod-pdf</span>
+      <span class="server-status s-pending">Pending</span>
+      <span class="server-pct">0%</span>
+    </div>
+    <div class="server-bar-bg"><div class="server-bar-fill fill-gray" style="width:0%"></div></div>
+    <div class="tags">
+      <span class="tag tag-not">Not started</span>
+    </div>
+  </div>
+
+  <!-- ── SERVER 5: backup ── -->
+  <div class="server-card">
+    <div class="server-header">
+      <div class="dot dot-gray"></div>
+      <span class="server-name">backup server</span>
+      <span class="server-status s-pending">Pending</span>
+      <span class="server-pct">0%</span>
+    </div>
+    <div class="server-bar-bg"><div class="server-bar-fill fill-gray" style="width:0%"></div></div>
+    <div class="tags">
+      <span class="tag tag-not">Not started</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    DIPA App Infrastructure &nbsp;·&nbsp; Sajjad IT Admin &nbsp;·&nbsp; May 2026
+  </div>
+
+</div>
+</body>
+</html>
