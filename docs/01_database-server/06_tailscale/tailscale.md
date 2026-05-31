@@ -593,3 +593,8 @@ tailscale serve status
 Rules are stored in `/etc/iptables/rules.v4` and restored automatically on reboot by `iptables-persistent`. The `tailscale serve` background processes are managed by `tailscaled` and reconnect automatically after reboot.
 
 The next chapter is **02_pdf-server** — setting up the second server with Portainer, Nginx, Apache, Python, n8n, FTP, and Tailscale.
+
+
+---
+
+[← 05 ORDS](../05_ords/ords.md) | [↑ Back to Overview](../../../README.md)

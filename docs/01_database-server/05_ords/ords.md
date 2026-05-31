@@ -438,3 +438,8 @@ ORDS 26.1 is running as a Docker container, connected to the Oracle Database via
 | Admin URL (direct) | `http://<YOUR-SERVER-IP>:8181/ords/apex_admin` |
 
 The next chapter covers **Tailscale** — the private VPN we use to securely expose Portainer and Nginx Proxy Manager to the outside world without opening additional public ports.
+
+
+---
+
+[← 04 Oracle APEX](../04_apex_install/apex.md) | [↑ Back to Overview](../../../README.md) | [→ 06 Tailscale, Domain & Firewall](../06_tailscale/tailscale.md)

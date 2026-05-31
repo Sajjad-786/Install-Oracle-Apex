@@ -362,3 +362,8 @@ Oracle Database 23c Enterprise Edition is now running as a Docker container, ful
 | Data volume | `oracle-23c-data` |
 
 The next step is installing **Oracle APEX** into the `ORCLPDB` pluggable database — before ORDS can serve the application, APEX itself must be installed into the database schema. After that, ORDS (Oracle REST Data Services) is set up to connect to `ORCLPDB` on port `1521` via the shared `database-ords` Docker network and expose Oracle APEX over HTTP.
+
+
+---
+
+[← 02 Nginx Proxy Manager](../02_nginx/nginx.md) | [↑ Back to Overview](../../../README.md) | [→ 04 Oracle APEX](../04_apex_install/apex.md)

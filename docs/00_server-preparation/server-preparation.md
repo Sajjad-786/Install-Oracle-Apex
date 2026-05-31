@@ -122,3 +122,8 @@ timedatectl set-timezone Europe/Berlin
 ```
 
 After running these commands, both servers are up to date and ready for the next steps.
+
+
+---
+
+[↑ Back to Overview](../../README.md) | [→ 01 Portainer](../01_database-server/01_portainer/portainer.md)

@@ -194,3 +194,8 @@ docker volume rm portainer_data
 ```
 
 > **Note:** If you only want to reinstall Portainer without losing your configuration, skip the last command. The volume will be reused automatically when you run the install command again.
+
+
+---
+
+[← 00 Server Preparation](../../00_server-preparation/server-preparation.md) | [↑ Back to Overview](../../../README.md) | [→ 02 Nginx Proxy Manager](../02_nginx/nginx.md)

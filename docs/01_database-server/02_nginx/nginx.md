@@ -297,3 +297,8 @@ Test it manually before rebooting:
 ```bash
 bash /home/autostart/nginx-tailscale-fix.sh
 ```
+
+
+---
+
+[← 01 Portainer](../01_portainer/portainer.md) | [↑ Back to Overview](../../../README.md) | [→ 03 Oracle Database](../03_database/database.md)

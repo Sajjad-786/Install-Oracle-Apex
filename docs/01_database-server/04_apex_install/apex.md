@@ -315,3 +315,8 @@ The script confirms: `Changed password of instance administrator ADMIN.`
 ![Password reset — success](screenshots/14_password_reset_success.jpg)
 
 You can now log in at `http://<YOUR-SERVER-IP>:8181/ords/apex_admin` with the new password.
+
+
+---
+
+[← 03 Oracle Database](../03_database/database.md) | [↑ Back to Overview](../../../README.md) | [→ 05 ORDS](../05_ords/ords.md)
